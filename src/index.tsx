@@ -21,7 +21,7 @@ app.get('/', async (c) => {
     return c.render(
       <main class="container">
         <h1>メッセージボード</h1>
-        <form method="POST" action="/">
+        <form method="post" action="/">
           <input type="text" name="content" placeholder="何か書いてみて..." required autocomplete="off" />
           <button type="submit">送信</button>
         </form>
@@ -32,8 +32,18 @@ app.get('/', async (c) => {
           ) : (
             messages.map((msg: any) => (
               <div class="message-card">
-                <span class="message-content">{msg.content}</span>
-                <span class="message-date">{new Date(msg.created_at).toLocaleString('ja-JP')}</span>
+                <div class="message-info">
+                  <span class="message-content">{msg.content}</span>
+                  <span class="message-date">{new Date(msg.created_at).toLocaleString('ja-JP')}</span>
+                </div>
+                <form method="post" action={`/delete/${msg.id}`} class="delete-form">
+                  <button type="submit" class="delete-btn" title="削除">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="3 6 5 6 21 6"></polyline>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                  </button>
+                </form>
               </div>
             ))
           )}
@@ -79,6 +89,29 @@ app.post('/', async (c) => {
         </main>
       )
     }
+  }
+  return c.redirect('/')
+})
+
+app.post('/delete/:id', async (c) => {
+  const id = c.req.param('id')
+
+  try {
+    if (!c.env || !c.env.DB) {
+      throw new Error('Database binding "DB" is not configured.')
+    }
+    await c.env.DB.prepare('DELETE FROM messages WHERE id = ?').bind(id).run()
+  } catch (e: any) {
+    return c.render(
+      <main class="container">
+        <h1>削除エラー</h1>
+        <div style="background: rgba(239, 68, 68, 0.1); padding: 1.5rem; border-radius: 0.75rem; border: 1px solid rgba(239, 68, 68, 0.2);">
+          <p style="color: #fca5a5;">メッセージの削除に失敗しました。</p>
+          <p style="font-size: 0.9rem; color: #fca5a5; margin-top: 0.5rem;">{e.message}</p>
+          <a href="/" style="display: inline-block; margin-top: 1rem; color: #fff; text-decoration: underline;">戻る</a>
+        </div>
+      </main>
+    )
   }
   return c.redirect('/')
 })

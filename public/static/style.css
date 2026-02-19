@@ -115,7 +115,8 @@ button:active {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: transform 0.2s ease;
+    gap: 1rem;
+    transition: transform 0.2s ease, background 0.2s ease;
 }
 
 .message-card:hover {
@@ -123,14 +124,55 @@ button:active {
     background: rgba(255, 255, 255, 0.08);
 }
 
+.message-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex: 1;
+    min-width: 0;
+}
+
 .message-content {
     font-size: 1.1rem;
     font-weight: 500;
+    word-break: break-word;
 }
 
 .message-date {
     font-size: 0.875rem;
     color: var(--text-muted);
+}
+
+.delete-form {
+    flex-shrink: 0;
+}
+
+.delete-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    background: rgba(239, 68, 68, 0.08);
+    color: #f87171;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.delete-btn:hover {
+    background: rgba(239, 68, 68, 0.25);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #fca5a5;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.delete-btn:active {
+    transform: translateY(0);
+    box-shadow: none;
 }
 
 @keyframes fadeIn {
